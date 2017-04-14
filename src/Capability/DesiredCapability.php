@@ -73,4 +73,23 @@ class DesiredCapability
         return $json;
     }
 
+    public function toArray(): array
+    {
+        return $this->capabilities;
+    }
+
+    /**
+     * Creates a default capabilities for chrome
+     *
+     * @return \Zolli\WebDriver\Capability\DesiredCapability
+     */
+    public static function chrome(): DesiredCapability
+    {
+        return new self([
+            Capabilities::SELENIUM_BROWSER_NAME => Browser::CHROME,
+            Capabilities::SELENIUM_BROWSER_VERSION => '',
+            Capabilities::SELENIUM_PLATFORM => Platform::ANY,
+        ]);
+    }
+
 }
