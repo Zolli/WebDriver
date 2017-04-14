@@ -1,0 +1,45 @@
+{
+    "name": "zolli/webdriver",
+    "description": "PHP implementation of the W3C WebDriver specification",
+    "license": "GPL-3.0",
+    "type": "library",
+    "homepage": "https://zolli.hu",
+    "authors": [
+        {
+            "name": "Zoltán Borsos",
+            "email": "zolli07@gmail.com",
+            "homepage": "https://zolli.hu",
+            "role": "developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/Zolli/WebDriver/issues",
+        "source": "https://github.com/Zolli/WebDriver",
+        "docs": "https://github.com/Zolli/WebDriver/wiki"
+    },
+    "keywords": [
+        "webdriver",
+        "testing",
+        "selenium"
+    ],
+    "require": {
+        "php": ">=7.1",
+        "guzzlehttp/guzzle": "^6.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Zolli\\WebDriver\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Zolli\\WebDriver\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "preferred-install": "dist"
+    }
+}
