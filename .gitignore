@@ -1,3 +1,7 @@
 # IntelliJ project files
 .idea
 *.iml
+
+# Composer vendor folder and lock file
+vendor/**
+composer.lock
