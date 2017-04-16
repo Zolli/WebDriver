@@ -8,8 +8,7 @@ $commandFactory = new \Zolli\WebDriver\Http\Command\HttpCommandFactory();
 
 $driver = new \Zolli\WebDriver\Remote\RemoteDriver($executor, $commandFactory);
 $session = $driver->createSession($capability);
-$session->setTimeouts(100000);
 
 $session->navigateTo('http://www.logout.hu');
-$id = $session->findElement(\Zolli\WebDriver\Selector\SelectorFactory::cssSelector('#head'));
-$id2 = $session->findElements(\Zolli\WebDriver\Selector\SelectorFactory::cssSelector('.megabox'));
+$id = $session->findElement(\Zolli\WebDriver\Selector\SelectorFactory::cssSelector('#headasd'));
+var_dump($id);

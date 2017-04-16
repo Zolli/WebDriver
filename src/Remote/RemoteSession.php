@@ -45,15 +45,103 @@ class RemoteSession
         $this->commandFactory = $commandFactory;
     }
 
-    public function navigateTo($url)
+    /**
+     * Navigate the browser to a given url
+     *
+     * @param string $url
+     */
+    public function navigateTo(string $url)
     {
         $command = $this->commandFactory->createCommand(Commands::NAVIGATE_TO_URL, [
             'url' => $url,
         ]);
 
-        $response = $this->executor->execute($command);
+        $this->executor->execute($command);
     }
 
+    /**
+     * Set the timeout that selenium needs to wait if the page is not loading
+     *
+     * @param int $timeoutInMilliseconds
+     *
+     * @return RemoteSession
+     */
+    public function setPageLoadTimeout(int $timeoutInMilliseconds): RemoteSession
+    {
+        $command = $this->commandFactory->createCommand(Commands::SET_SESSION_TIMEOUTS, [
+            'type' => 'page load',
+            'ms' => $timeoutInMilliseconds,
+        ]);
+
+        $this->executor->execute($command);
+
+        return $this;
+    }
+
+    /**
+     * Timeout for all general command
+     *
+     * @param int $timeoutInMilliseconds
+     *
+     * @return RemoteSession
+     */
+    public function setImplicitWait(int $timeoutInMilliseconds): RemoteSession
+    {
+        $command = $this->commandFactory->createCommand(Commands::SET_SESSION_TIMEOUT_IMPLICIT_WAIT, [
+            'ms' => $timeoutInMilliseconds,
+        ]);
+
+        $this->executor->execute($command);
+
+        return $this;
+    }
+
+
+    /**
+     * Timeout for asynchronous script execution
+     *
+     * @param int $timeoutInMilliseconds
+     *
+     * @return RemoteSession
+     */
+    public function setAsyncScriptTimeout(int $timeoutInMilliseconds): RemoteSession
+    {
+        $command = $this->commandFactory->createCommand(Commands::SET_SESSION_TIMEOUT_ASYNC_SCRIPT, [
+            'ms' => $timeoutInMilliseconds,
+        ]);
+
+        $this->executor->execute($command);
+
+        return $this;
+    }
+
+    /**
+     * Timeout for general Javascript execution
+     *
+     * @param int $timeoutInMilliseconds
+     *
+     * @return RemoteSession
+     */
+    public function setScriptTimeout(int $timeoutInMilliseconds): RemoteSession
+    {
+        $command = $this->commandFactory->createCommand(Commands::SET_SESSION_TIMEOUTS, [
+            'type' => 'script',
+            'ms' => $timeoutInMilliseconds,
+        ]);
+
+        $this->executor->execute($command);
+
+        return $this;
+    }
+
+    /**
+     * Finds on element on the page by given selector. If the selector matches more than
+     * one element only the first matched element will be returned
+     *
+     * @param SelectorStrategyInterface $selector
+     *
+     * @return int
+     */
     public function findElement(SelectorStrategyInterface $selector)
     {
         $command = $this->commandFactory->createCommand(Commands::SEARCH_ELEMENT_FROM_ROOT, [
@@ -62,7 +150,8 @@ class RemoteSession
         ]);
 
         $response = $this->executor->execute($command);
-        return $response['value']['ELEMENT'];
+        $elementId = (int) $response['value']['ELEMENT'];
+        return $elementId;
     }
 
     public function findElements(SelectorStrategyInterface $selector)
@@ -73,38 +162,6 @@ class RemoteSession
         ]);
 
         $response = $this->executor->execute($command);
-        var_dump($response);
-    }
-
-    public function setTimeouts($inMs)
-    {
-        $commandImplicit = $this->commandFactory->createCommand(Commands::SET_SESSION_TIMEOUTS, [
-            'type' => 'implicit',
-            'ms' => $inMs,
-        ]);
-
-        $commandScript = $this->commandFactory->createCommand(Commands::SET_SESSION_TIMEOUTS, [
-            'type' => 'script',
-            'ms' => $inMs,
-        ]);
-
-        $commandPageLoad = $this->commandFactory->createCommand(Commands::SET_SESSION_TIMEOUTS, [
-            'type' => 'page load',
-            'ms' => $inMs,
-        ]);
-
-        $this->executor->execute($commandImplicit);
-        $this->executor->execute($commandScript);
-        $this->executor->execute($commandPageLoad);
-    }
-
-    public function getTextFromElement($id)
-    {
-        $command = $this->commandFactory->createCommand(Commands::GET_TEXT_FROM_ELEMENT, [], [
-            'id' => $id,
-        ]);
-
-        $response = $this->executor->execute($command, true);
         var_dump($response);
     }
 

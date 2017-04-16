@@ -5,6 +5,7 @@ namespace Zolli\WebDriver\Http\Guzzle;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ServerException;
 use \InvalidArgumentException;
+use Zolli\WebDriver\Exception\DriverException;
 use Zolli\WebDriver\Http\Command\HttpCommand;
 use Zolli\WebDriver\Http\HttpCommandExecutorInterface;
 
@@ -61,11 +62,15 @@ class GuzzleHttpCommandExecutor implements HttpCommandExecutorInterface
             ];
         }
 
-        $response = $this->client->request(
-            $command->getMethod(),
-            $this->remoteUrl . $command->getSuffixWithParameters(),
-            $additional
-        );
+        try {
+            $response = $this->client->request(
+                $command->getMethod(),
+                $this->remoteUrl . $command->getSuffixWithParameters(),
+                $additional
+            );
+        } catch (ServerException $exception) {
+            $response = $exception->getResponse();
+        }
 
         $responseContent = $response->getBody()->getContents();
 
@@ -73,7 +78,22 @@ class GuzzleHttpCommandExecutor implements HttpCommandExecutorInterface
             return $responseContent;
         }
 
-        return \GuzzleHttp\json_decode($responseContent, true);
+        $decodedResponse = \GuzzleHttp\json_decode($responseContent, true);
+        $this->throwExceptionIfError($decodedResponse);
+
+        return $decodedResponse;
+    }
+
+    protected function throwExceptionIfError($decodedResponse)
+    {
+        if (isset($decodedResponse['status']) && $decodedResponse['status'] > 0) {
+            $exception = DriverException::createByStatus(
+                $decodedResponse['status'],
+                    $decodedResponse['value']['localizedMessage']
+            );
+
+            throw $exception;
+        }
     }
 
 }
