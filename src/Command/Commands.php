@@ -55,7 +55,6 @@ class Commands
     const SEARCH_ELEMENT_FROM_ROOT = 'searchElementFromRoot';
     const SEARCH_ELEMENTS_FROM_ROOT = 'searchElementsFromRoot';
     const GET_CURRENTLY_FOCUSED_ELEMENT = 'getCurrentlyFocusedElement';
-    const DESCRIBE_ELEMENT = 'describeElement';
     const SEARCH_ELEMENT_FROM_ANOTHER = 'searchElementFromAnother';
     const SEARCH_ELEMENTS_FROM_ANOTHER = 'searchElementsFromAnother';
     const CLICK_ON_ELEMENT = 'clickOnElement';
