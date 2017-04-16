@@ -25,7 +25,7 @@ abstract class DriverException extends Exception
         parent::__construct($message, $this->getDriverErrorCode(), $previous);
     }
 
-    public static function createByStatus(string $status, string $message): Exception
+    public static function createByStatus(string $status, string $message = null): Exception
     {
         switch ($status) {
             case 6:

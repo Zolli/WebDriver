@@ -8,7 +8,8 @@ $commandFactory = new \Zolli\WebDriver\Http\Command\HttpCommandFactory();
 
 $driver = new \Zolli\WebDriver\Remote\RemoteDriver($executor, $commandFactory);
 $session = $driver->createSession($capability);
+$window = $session->getWindow();
+$window->setSize(1920, 1080);
+$window->setPosition(0, 0);
 
 $session->navigateTo('http://www.logout.hu');
-$id = $session->findElement(\Zolli\WebDriver\Selector\SelectorFactory::cssSelector('#headasd'));
-var_dump($id);

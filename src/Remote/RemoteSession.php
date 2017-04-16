@@ -60,6 +60,33 @@ class RemoteSession
     }
 
     /**
+     * Navigates forward in browser history. If has any.
+     */
+    public function navigateForward()
+    {
+        $command = $this->commandFactory->createCommand(Commands::NAVIGATE_FORWARD);
+        $this->executor->execute($command);
+    }
+
+    /**
+     * Navigates backward in browser history. If has any.
+     */
+    public function navigateBackward()
+    {
+        $command = $this->commandFactory->createCommand(Commands::NAVIGATE_BACK);
+        $this->executor->execute($command);
+    }
+
+    /**
+     * Refreshes the current page
+     */
+    public function refresh()
+    {
+        $command = $this->commandFactory->createCommand(Commands::NAVIGATE_REFRESH);
+        $this->executor->execute($command);
+    }
+
+    /**
      * Set the timeout that selenium needs to wait if the page is not loading
      *
      * @param int $timeoutInMilliseconds
@@ -95,7 +122,6 @@ class RemoteSession
 
         return $this;
     }
-
 
     /**
      * Timeout for asynchronous script execution
@@ -135,6 +161,59 @@ class RemoteSession
     }
 
     /**
+     * Destroy the currently opened session. Destroying the session also close all open window that
+     * opened in this session
+     */
+    public function destroy()
+    {
+        $command = $this->commandFactory->createCommand(Commands::DELETE_SESSION_BY_ID);
+        $this->executor->execute($command);
+    }
+
+    /**
+     * Takes a screenshot form the current window. The screenshot is strictly PNG.
+     *
+     * @param string $file The file where the screenshot is written. MUst contains the PNG extension
+     */
+    public function takeScreenshot(string $file)
+    {
+        $command = $this->commandFactory->createCommand(Commands::TAKE_SCREENSHOT);
+        $response = $this->executor->execute($command);
+        $content = $response['value'];
+
+        file_put_contents($file, base64_decode($content));
+    }
+
+    /**
+     * Returns the current URL in browser
+     *
+     * @return string
+     */
+    public function getCurrentUrl(): string
+    {
+        $command = $this->commandFactory->createCommand(Commands::GET_SESSION_URL);
+        $response = $this->executor->execute($command);
+
+        return isset($response['value']) ? $response['value'] : '';
+    }
+
+    /**
+     * Returns an object that represent the current browser window
+     *
+     * @return RemoteWindow
+     */
+    public function getWindow(): RemoteWindow
+    {
+        $command = $this->commandFactory->createCommand(Commands::GET_WINDOW_HANDLE);
+        $response = $this->executor->execute($command);
+        $windowHandle = $response['value'];
+        $cloneCommandFactory = clone $this->commandFactory;
+        $cloneCommandFactory->setDefaultArgument('windowHandle', $windowHandle);
+
+        return new RemoteWindow($this->executor, $cloneCommandFactory);
+    }
+
+    /**
      * Finds on element on the page by given selector. If the selector matches more than
      * one element only the first matched element will be returned
      *
@@ -161,6 +240,25 @@ class RemoteSession
             'value' => $selector->getSelector(),
         ]);
 
+        $response = $this->executor->execute($command);
+        var_dump($response);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function test()
+    {
+        $command = $this->commandFactory->createCommand(Commands::GET_ALL_IME_ENGINES, [], []);
         $response = $this->executor->execute($command);
         var_dump($response);
     }
