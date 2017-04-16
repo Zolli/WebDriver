@@ -43,11 +43,10 @@ interface HttpCommandFactoryInterface
      *
      * @param string $forCommand The command name. Use Commands class
      * @param array $parameters
+     * @param array $arguments
      *
-     * @return HttpCommand
-     *
-     * @throws MissingUrlMappingException
+     * @return \Zolli\WebDriver\Http\Command\HttpCommand
      */
-    public function createCommand(string $forCommand, array $parameters = []): HttpCommand;
+    public function createCommand(string $forCommand, array $parameters = [], array $arguments = []): HttpCommand;
 
 }

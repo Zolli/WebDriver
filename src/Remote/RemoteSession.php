@@ -100,8 +100,9 @@ class RemoteSession
 
     public function getTextFromElement($id)
     {
-        $this->commandFactory->setDefaultArgument('id', $id);
-        $command = $this->commandFactory->createCommand(Commands::GET_TEXT_FROM_ELEMENT);
+        $command = $this->commandFactory->createCommand(Commands::GET_TEXT_FROM_ELEMENT, [], [
+            'id' => $id,
+        ]);
 
         $response = $this->executor->execute($command, true);
         var_dump($response);

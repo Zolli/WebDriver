@@ -403,7 +403,7 @@ class HttpCommandFactory extends AbstractCommandFactory
     /**
      * @inheritdoc
      */
-    public function createCommand(string $forCommand, array $parameters = []): HttpCommand
+    public function createCommand(string $forCommand, array $parameters = [], array $arguments = []): HttpCommand
     {
         if (!array_key_exists($forCommand, $this->mapping)) {
             throw new MissingUrlMappingException(
@@ -411,7 +411,9 @@ class HttpCommandFactory extends AbstractCommandFactory
             );
         }
 
-        return new HttpCommand($this->mapping[$forCommand], $this->arguments, $parameters);
+        $arguments = array_merge($this->arguments, $arguments);
+
+        return new HttpCommand($this->mapping[$forCommand], $arguments, $parameters);
     }
 
 }
