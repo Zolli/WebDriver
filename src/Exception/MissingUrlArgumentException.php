@@ -5,7 +5,7 @@ namespace Zolli\WebDriver\Exception;
 use \Exception;
 
 /**
- * MissingUrlMappingException
+ * MissingUrlArgument Exception
  *
  * @package Zolli\WebDriver
  * @subpackage Exception
@@ -13,7 +13,7 @@ use \Exception;
  * @copyright    Copyright 2017, Zoltán Borsos
  * @license      https://github.com/Zolli/WebDriver/blob/master/LICENSE.md
  */
-class MissingUrlMappingException extends Exception
+class MissingUrlArgumentException extends Exception
 {
 
 }

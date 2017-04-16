@@ -7,6 +7,9 @@ namespace Zolli\WebDriver\Command;
  *
  * @package Zolli\WebDriver
  * @subpackage Comamnds
+ *
+ * @copyright    Copyright 2017, Zoltán Borsos
+ * @license      https://github.com/Zolli/WebDriver/blob/master/LICENSE.md
  */
 class Commands
 {

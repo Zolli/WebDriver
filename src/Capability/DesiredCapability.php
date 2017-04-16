@@ -9,6 +9,9 @@ use Zolli\WebDriver\Exception\InvalidArgumentException;
  *
  * @package Zolli\WebDriver
  * @subpackage Capability
+ *
+ * @copyright    Copyright 2017, Zoltán Borsos
+ * @license      https://github.com/Zolli/WebDriver/blob/master/LICENSE.md
  */
 class DesiredCapability
 {
