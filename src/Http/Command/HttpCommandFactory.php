@@ -190,10 +190,6 @@ class HttpCommandFactory extends AbstractCommandFactory
             'method' => 'POST',
             'url' => '/session/:sessionId/element/active',
         ],
-        Commands::DESCRIBE_ELEMENT => [
-            'method' => 'GET',
-            'url' => '/session/:sessionId/element/:id',
-        ],
         Commands::SEARCH_ELEMENT_FROM_ANOTHER => [
             'method' => 'POST',
             'url' => '/session/:sessionId/element/:id/element',
@@ -407,7 +403,7 @@ class HttpCommandFactory extends AbstractCommandFactory
     /**
      * @inheritdoc
      */
-    public function createCommand(string $forCommand, array $additionalParameters = []): HttpCommand
+    public function createCommand(string $forCommand, array $parameters = []): HttpCommand
     {
         if (!array_key_exists($forCommand, $this->mapping)) {
             throw new MissingUrlMappingException(
@@ -415,10 +411,7 @@ class HttpCommandFactory extends AbstractCommandFactory
             );
         }
 
-        $commandDetails = $this->mapping[$forCommand];
-        $parameters = array_merge($additionalParameters, $this->arguments);
-
-        return new HttpCommand($commandDetails, $parameters);
+        return new HttpCommand($this->mapping[$forCommand], $this->arguments, $parameters);
     }
 
 }

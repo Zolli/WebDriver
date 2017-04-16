@@ -32,16 +32,28 @@ class HttpCommand
     private $method;
 
     /**
+     * @var array
+     */
+    private $parameters;
+
+    /**
      * HttpCommand constructor
      *
      * @param array $methodDetails
      * @param array $arguments
+     * @param array $parameters
      */
-    public function __construct(array $methodDetails, array $arguments = [])
+    public function __construct(array $methodDetails, array $arguments = [], array $parameters = [])
     {
         $this->arguments = $arguments;
         $this->rawSuffix = $methodDetails['url'];
         $this->method = $methodDetails['method'];
+        $this->parameters = $parameters;
+    }
+
+    public function getParameters()
+    {
+        return $this->parameters;
     }
 
     /**

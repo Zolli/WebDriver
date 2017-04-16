@@ -46,12 +46,25 @@ class GuzzleHttpCommandExecutor implements HttpCommandExecutorInterface
      */
     public function execute(HttpCommand $command, bool $asRaw = false)
     {
+        $body = json_encode($command->getParameters());
+
+        $additional = [];
+
+        if (in_array($command->getMethod(), ['PUT', 'POST']))
+        {
+            $additional = [
+                'body' => $body,
+                'headers' => [
+                    'Content-Length' => strlen($body),
+                    'Content-Type' => 'application/json',
+                ]
+            ];
+        }
+
         $response = $this->client->request(
             $command->getMethod(),
             $this->remoteUrl . $command->getSuffixWithParameters(),
-            [
-                'body' => json_encode($command->getArguments()),
-            ]
+            $additional
         );
 
         $responseContent = $response->getBody()->getContents();

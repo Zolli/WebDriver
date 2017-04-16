@@ -42,12 +42,12 @@ interface HttpCommandFactoryInterface
      * make HTTP calls
      *
      * @param string $forCommand The command name. Use Commands class
-     * @param array $additionalParameters
+     * @param array $parameters
      *
      * @return HttpCommand
      *
      * @throws MissingUrlMappingException
      */
-    public function createCommand(string $forCommand, array $additionalParameters = []): HttpCommand;
+    public function createCommand(string $forCommand, array $parameters = []): HttpCommand;
 
 }
