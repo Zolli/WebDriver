@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Project definition (This variable will be replaced) -->
+<project name="Zolli/WebDriver Phing Build" basedir="." default="default">
+
+    <!-- Load main properties file -->
+    <property file="${baseDir}/build.properties" />
+
+    <!-- Project actual baseDir definition -->
+    <property name="baseDir" value="${project.basedir}"/>
+
+    <!-- By default, we assume tools installed using composer -->
+    <property name="toolsdir" value="${baseDir}/vendor/bin/" />
+
+    <!-- Uncomment this if you want use tools defined in $PATH -->
+    <!-- <property name="toolsdir" value="" /> -->
+
+    <exec outputProperty="git.currentBranch" command="git rev-parse --abbrev-ref HEAD" dir="${baseDir}"/>
+    <exec outputProperty="git.currentCommitShortHash" command="git rev-parse --short HEAD" dir="${baseDir}" />
+
+    <!-- Current project version (This value will be replaced) -->
+    <property name="projectName" value="Zolli/WebDriver" />
+
+    <!-- Where tools store output files -->
+    <property name="buildOutputPath" value="${baseDir}/build/output" />
+
+    <!-- Detect OS family to call the proper executable -->
+    <condition property="binaryExtension" value=".bat">
+        <os family="windows" />
+    </condition>
+
+    <condition property="binaryExtension" value="">
+        <os family="unix" />
+    </condition>
+
+    <echo message="Started building ${projectName}" level="info" />
+    <echo message="Version: ${projectVersion}" level="info" />
+    <echo message="Used extension: ${binaryExtension}" level="info" />
+    <echo message="Git branch: ${git.currentBranch}" level="info" />
+    <echo message="Git commit hash: ${git.currentCommitShortHash}" level="info" />
+
+    <!-- Default build target -->
+    <target name="default"
+            depends="clean,prepare,lint,composer,phpunit,phpcs,phploc,phpcpd"
+            description="Default build target" />
+
+    <!-- Clean all previous build in workspace -->
+    <target name="clean"
+            depends=""
+            unless="clean.done"
+            description="Perform output cleanup">
+
+        <delete dir="${buildOutputPath}" />
+        <property name="clean.done" value="true" />
+    </target>
+
+    <!-- Make all output sub directory for tools -->
+    <target name="prepare"
+            depends="clean"
+            unless="prepare.done"
+            description="Perform to create build output directories and replace variables">
+
+        <!-- Making output directories -->
+        <mkdir dir="${buildOutputPath}/logs" />
+        <mkdir dir="${buildOutputPath}/changelogs" />
+        <mkdir dir="${buildOutputPath}/coverage" />
+        <mkdir dir="${buildOutputPath}/pdepend" />
+        <mkdir dir="${buildOutputPath}/release" />
+        <mkdir dir="${buildOutputPath}/api_doc" />
+        <mkdir dir="${buildOutputPath}/doc" />
+        <property name="prepare.done" value="true" />
+    </target>
+
+    <!-- Update or install composer dependencies -->
+    <target name="composer"
+            depends="prepare"
+            description="Performing composer installation validation, and dependency installing">
+
+        <!-- Detect that composer is available in PATH environment variable -->
+        <property environment="env" />
+        <property name="composer.availableGlobally" value="0" />
+
+        <condition property="composer.availableGlobally" value="1">
+            <or>
+                <available  property="composer.availableGlobally" file="composer" filepath="${env.Path}" />
+                <available  property="composer.availableGlobally" file="composer" filepath="${env.PATH}" />
+            </or>
+        </condition>
+
+        <!-- Determine the base command and download composer when needed -->
+        <if>
+            <equals arg1="${composer.availableGlobally}" arg2="1" />
+            <then>
+                <echo message="Found composer installation in your PATH environment variable!" />
+                <property name="composer.baseCommand" value="composer${binaryExtension}" />
+            </then>
+
+            <else>
+                <echo message="Composer is not installed! Downloading..." />
+                <exec command="curl -sS https://getcomposer.org/installer | php" />
+                <property name="composer.baseCommand" value="php" />
+                <property name="composer.baseCommandExt" value="${baseDir}\composer.phar" />
+                <echo message="Composer is installed to: ${composer.baseCommandExt}" />
+            </else>
+        </if>
+
+        <!--
+            Determine is the composer.lock file is exist or not.
+            If this exist its mean that dependencies is already installed so only need an update.
+        -->
+        <property name="composer.subCommand" value="install" />
+
+        <condition property="composer.subCommand" value="update">
+            <available property="composer.subCommand" file="${baseDir}/composer.lock" />
+        </condition>
+
+        <echo message="Running the following sub-command: ${composer.subCommand}" level="info" />
+
+        <!-- Actually run composer -->
+        <if>
+            <equals arg1="${composer.availableGlobally}" arg2="1" />
+            <then>
+                <exec executable="${composer.baseCommand}">
+                    <arg value="${composer.subCommand}" />
+                    <arg value="--no-interaction" />
+                    <arg value="--optimize-autoloader" />
+                    <arg value="--dev" />
+                </exec>
+            </then>
+
+            <else>
+                <exec executable="${composer.baseCommand}">
+                    <arg file="${composer.baseCommandExt}" />
+                    <arg value="${composer.subCommand}" />
+                    <arg value="--no-interaction" />
+                    <arg value="--optimize-autoloader" />
+                    <arg value="--dev" />
+                </exec>
+            </else>
+        </if>
+    </target>
+
+    <!-- Linting PHP syntax using PHP build-in parser -->
+    <target name="lint"
+            depends="prepare"
+            description="Perform syntax check of sourcecode files">
+
+        <!-- Collect files in 'src' folder and run liner in 4 process -->
+        <exec passthru="true" executable="bash" checkreturn="true">
+            <arg value="-c" />
+            <arg value="find ./src -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l" />
+        </exec>
+
+        <!-- Collect files in 'tests' folder and run liner in 4 process -->
+        <exec passthru="true" executable="bash" checkreturn="true">
+            <arg value="-c" />
+            <arg value="find ./tests -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l" />
+        </exec>
+    </target>
+
+    <!-- Unit testing -->
+    <target name="phpunit"
+            depends="prepare"
+            description="Perform unit test using PHPUnit">
+
+        <exec passthru="true" executable="${toolsdir}phpunit${binaryExtension}" checkreturn="true">
+            <arg value="--colors=auto" />
+            <arg value="--configuration" />
+            <arg path="${baseDir}/phpunit.xml" />
+        </exec>
+    </target>
+
+    <!-- Changelog generation target -->
+    <target name="changelog"
+            depends="prepare"
+            description="Perform changelog generation">
+
+        <!-- Generate standard changelog -->
+        <exec executable="bash" checkreturn="true" output="${buildOutputPath}/changelogs/general">
+            <arg value="-c" />
+            <arg value="git log --pretty=format:'* %H: %s%n'" />
+        </exec>
+
+        <!-- Generate 'full' changelog, that contains the full commit message -->
+        <exec executable="bash" checkreturn="true" output="${buildOutputPath}/changelogs/full">
+            <arg value="-c" />
+            <arg value="git log --pretty=format:'Commit: %H%nAuthor: %an &#60;%ae&#62;%nDate: %ai%n%n%s%n%b----------------%n'" />
+        </exec>
+    </target>
+
+    <!-- Duplicated code finding -->
+    <target name="phpcpd"
+            depends="prepare"
+            description="Perform duplicated code checking with PHPCPD">
+
+        <exec passthru="true" executable="${toolsdir}phpcpd${binaryExtension}">
+            <arg value="--log-pmd=${buildOutputPath}/logs/pmd-cpd.xml" />
+            <arg path="${baseDir}/src" />
+        </exec>
+
+    </target>
+
+    <!-- Coding standard checks -->
+    <target name="phpcs"
+            depends="prepare"
+            description="Perform coding standard verification using PHP-CodeSniffer">
+
+        <!-- Execute process -->
+        <exec passthru="true" executable="${toolsdir}phpcs${binaryExtension}">
+            <arg value="--report=checkstyle" />
+            <arg value="--report-file=${buildOutputPath}/logs/checkstyle.xml" />
+            <arg value="--standard=PSR2" />
+            <arg value="-p" />
+            <arg path="${baseDir}/src" />
+        </exec>
+    </target>
+
+    <!-- Software metrics -->
+    <target name="pdepend"
+            depends="prepare"
+            description="Perform software metrics using PDepend">
+
+        <exec passthru="true" executable="${toolsdir}pdepend${binaryExtension}">
+            <arg value="--jdepend-xml=${buildOutputPath}/pdepend/jdepend.xml" />
+            <arg path="${baseDir}/src" />
+        </exec>
+    </target>
+
+    <!-- Project size measurement -->
+    <target name="phploc"
+            depends="prepare"
+            description="Perform project size messaurment using PHPLOC">
+
+        <exec passthru="true" executable="${toolsdir}phploc${binaryExtension}">
+            <arg value="--count-tests" />
+            <arg value="--log-csv" />
+            <arg path="${buildOutputPath}/logs/phploc.csv" />
+            <arg value="--log-xml" />
+            <arg path="${buildOutputPath}/logs/phploc.xml" />
+            <arg path="${baseDir}/src" />
+            <arg path="${baseDir}/tests" />
+        </exec>
+    </target>
+
+</project>

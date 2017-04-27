@@ -5,3 +5,9 @@
 # Composer vendor folder and lock file
 vendor/**
 composer.lock
+
+# Build files
+build/output/**
+
+# Composer donloaded by the build task
+composer.phar

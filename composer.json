@@ -27,7 +27,11 @@
         "guzzlehttp/guzzle": "^6.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.1"
+        "phpunit/phpunit": "^6.1",
+        "phing/phing": "^2.16",
+        "squizlabs/php_codesniffer": "^2.8",
+        "phploc/phploc": "^3.0",
+        "sebastian/phpcpd": "^3.0"
     },
     "autoload": {
         "psr-4": {
