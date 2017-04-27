@@ -45,7 +45,7 @@ class Commands
     const GET_WINDOW_SIZE = 'getWindowSize'; //Implemented
     const SET_WINDOW_POSITION = 'setWindowPosition'; //Implemented
     const GET_WINDOW_POSITION = 'getWindowPosition'; //Implemented
-    const SET_WINDOW_MAXIMIZED = 'setWindowMaximized'; //Implemented
+    const SET_WINDOW_MAXIMIZED = 'setWindowMaximized'; //- Not supported
     const GET_ALL_COOKIES = 'getAllCookies';
     const SET_COOKIE = 'setCookie';
     const DELETE_ALL_COOKIE = 'deleteAllCookie';
