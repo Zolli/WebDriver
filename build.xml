@@ -3,11 +3,11 @@
 <!-- Project definition (This variable will be replaced) -->
 <project name="Zolli/WebDriver Phing Build" basedir="." default="default">
 
-    <!-- Load main properties file -->
-    <property file="${baseDir}/build.properties" />
-
     <!-- Project actual baseDir definition -->
     <property name="baseDir" value="${project.basedir}"/>
+
+    <!-- Load main properties file -->
+    <property file="${baseDir}/build.properties" />
 
     <!-- By default, we assume tools installed using composer -->
     <property name="toolsdir" value="${baseDir}/vendor/bin/" />
