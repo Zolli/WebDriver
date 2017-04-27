@@ -1,0 +1,16 @@
+language: php
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+php:
+  - 7.0
+  - 7.1
+
+before_install:
+  - sudo apt-get update -qq
+  - composer self-update
+
+script:
+ - ./vendor/bin/phing -f build.xml default
