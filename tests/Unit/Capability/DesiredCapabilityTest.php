@@ -48,4 +48,14 @@ class DesiredCapabilityTest extends TestCase
         $this->assertTrue($desiredCapability->has(Capabilities::SELENIUM_BROWSER_NAME));
     }
 
+    public function testIsCastToArrayProperly()
+    {
+        $desiredCapability = new DesiredCapability();
+        $desiredCapability->add(Capabilities::SELENIUM_PLATFORM, Platform::ANY);
+
+        $expected = ['platform' => 'ANY'];
+        $this->assertEquals($expected, $desiredCapability->toArray());
+
+    }
+
 }

@@ -2,6 +2,17 @@
 
 namespace Zolli\WebDriver\Selector\Strategy;
 
+/**
+ * Strategies Enum
+ *
+ * @package Zolli\WebDriver
+ * @subpackage Selector\Strategy
+ *
+ * @copyright    Copyright 2017, Zoltán Borsos
+ * @license      https://github.com/Zolli/WebDriver/blob/master/LICENSE.md
+ *
+ * @codeCoverageIgnore
+ */
 class Strategies
 {
 

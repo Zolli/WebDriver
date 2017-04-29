@@ -85,6 +85,8 @@ class DesiredCapability
      * Creates a default capabilities for chrome
      *
      * @return \Zolli\WebDriver\Capability\DesiredCapability
+     *
+     * @codeCoverageIgnore
      */
     public static function chrome(): DesiredCapability
     {

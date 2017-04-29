@@ -2,6 +2,15 @@
 
 namespace Zolli\WebDriver\Selector\Strategy;
 
+/**
+ * Abstract base for element selector strategies
+ *
+ * @package Zolli\WebDriver
+ * @subpackage Selector\Strategy
+ *
+ * @copyright    Copyright 2017, Zoltán Borsos
+ * @license      https://github.com/Zolli/WebDriver/blob/master/LICENSE.md
+ */
 abstract class AbstractSelectorStrategy implements SelectorStrategyInterface
 {
 
@@ -33,7 +42,7 @@ abstract class AbstractSelectorStrategy implements SelectorStrategyInterface
      */
     public function __toString()
     {
-        return 'Strategy: ' . $this->getStrategyName() . ' Selector: ' . $this->selector;
+        return 'Using: ' . $this->getStrategyName() . ' Value: ' . $this->selector;
     }
 
 }

@@ -19,6 +19,8 @@ abstract class DriverException extends Exception
 
     /**
      * @inheritdoc
+     *
+     * @codeCoverageIgnore
      */
     public function __construct($message = "", $code = 0, Throwable $previous = null)
     {
@@ -101,7 +103,7 @@ abstract class DriverException extends Exception
                 return new MoveTargetOutOfBoundsException($message, $status);
                 break;
             default:
-                return new \Exception(sprintf('Invalid error code! %s', $message), $status);
+                return new \Exception(sprintf('Invalid error code! Status: %s Message: %s', $status, $message), $status);
         }
     }
 
