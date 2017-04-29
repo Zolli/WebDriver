@@ -4,7 +4,6 @@ namespace Zolli\WebDriver\Http\Guzzle;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ServerException;
-use \InvalidArgumentException;
 use Zolli\WebDriver\Exception\DriverException;
 use Zolli\WebDriver\Http\Command\HttpCommand;
 use Zolli\WebDriver\Http\HttpCommandExecutorInterface;
@@ -47,26 +46,13 @@ class GuzzleHttpCommandExecutor implements HttpCommandExecutorInterface
      */
     public function execute(HttpCommand $command, bool $asRaw = false)
     {
-        $body = json_encode($command->getParameters());
-
-        $additional = [];
-
-        if (in_array($command->getMethod(), ['PUT', 'POST']))
-        {
-            $additional = [
-                'body' => $body,
-                'headers' => [
-                    'Content-Length' => strlen($body),
-                    'Content-Type' => 'application/json',
-                ]
-            ];
-        }
+        $options = $this->getOptionsByCommand($command);
 
         try {
             $response = $this->client->request(
                 $command->getMethod(),
-                $this->remoteUrl . $command->getSuffixWithParameters(),
-                $additional
+                $this->remoteUrl . $command->getSuffixWithArguments(),
+                $options
             );
         } catch (ServerException $exception) {
             $response = $exception->getResponse();
@@ -84,7 +70,42 @@ class GuzzleHttpCommandExecutor implements HttpCommandExecutorInterface
         return $decodedResponse;
     }
 
-    protected function throwExceptionIfError($decodedResponse)
+    /**
+     * Returns a guzzle compatible request options by the http command.
+     * If the command is a PUT or POST request the returned array contains the body
+     * and the needed Content-Type and Content-Length headers
+     *
+     * @param HttpCommand $command
+     *
+     * @return array
+     */
+    protected function getOptionsByCommand(HttpCommand $command): array
+    {
+        $body = \GuzzleHttp\json_encode($command->getParameters());
+        $returned = [];
+
+        if (in_array($command->getMethod(), ['PUT', 'POST'])) {
+            $returned = [
+                'body' => $body,
+                'headers' => [
+                    'Content-Length' => mb_strlen($body),
+                    'Content-Type' => 'application/json',
+                ]
+            ];
+        }
+
+        return $returned;
+    }
+
+    /**
+     * Checks response fro error codes, if found any standard response error code
+     * the corresponding exception will be thrown
+     *
+     * @param array $decodedResponse
+     *
+     * @throws DriverException
+     */
+    protected function throwExceptionIfError(array $decodedResponse): void
     {
         if (isset($decodedResponse['status']) && $decodedResponse['status'] > 0) {
             $exception = DriverException::createByStatus(

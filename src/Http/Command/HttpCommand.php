@@ -51,9 +51,32 @@ class HttpCommand
         $this->parameters = $parameters;
     }
 
-    public function getParameters()
+    /**
+     * Returns the parameters contains by the request body
+     *
+     * @return array
+     */
+    public function getParameters(): array
     {
         return $this->parameters;
+    }
+
+    /**
+     * Get on parameter from the request body by name
+     * The returned parameter always casted to string
+     *
+     * @param string $parameterName
+     *
+     * @return string|null
+     *
+     */
+    public function getParameter(string $parameterName): ?string
+    {
+        if (!array_key_exists($parameterName, $this->parameters)) {
+            return null;
+        }
+
+        return (string) $this->parameters[$parameterName];
     }
 
     /**
@@ -92,9 +115,9 @@ class HttpCommand
      *
      * @param string $name The argument name
      *
-     * @return mixed|null
+     * @return string|null
      */
-    public function getArgument(string $name): string
+    public function getArgument(string $name): ?string
     {
         if (!array_key_exists($name, $this->arguments)) {
             return null;
@@ -110,7 +133,7 @@ class HttpCommand
      *
      * @throws MissingUrlArgumentException
      */
-    public function getSuffixWithParameters(): string
+    public function getSuffixWithArguments(): string
     {
         preg_match_all('/\:(\w+)/', $this->rawSuffix, $matches);
         $matchedArguments = $matches[1];
