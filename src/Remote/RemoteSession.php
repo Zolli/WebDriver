@@ -2,6 +2,7 @@
 
 namespace Zolli\WebDriver\Remote;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Zolli\WebDriver\Command\Commands;
 use Zolli\WebDriver\Http\Command\HttpCommandFactoryInterface;
 use Zolli\WebDriver\Http\HttpCommandExecutorInterface;
@@ -211,6 +212,45 @@ class RemoteSession
         $cloneCommandFactory->setDefaultArgument('windowHandle', $windowHandle);
 
         return new RemoteWindow($this->executor, $cloneCommandFactory);
+    }
+
+    /**
+     * Returns all cookie contains by the current session
+     *
+     * @return ArrayCollection
+     */
+    public function getAllCookie(): ArrayCollection
+    {
+        $command = $this->commandFactory->createCommand(Commands::GET_ALL_COOKIES);
+        $response = $this->executor->execute($command);
+        $content = $response['value'];
+        $cookies = [];
+
+        foreach ($content as $cookie) {
+            $cookies[$cookie['name']] = new RemoteCookie($this->executor, $this->commandFactory, $cookie);
+        }
+
+        return new ArrayCollection($cookies);
+    }
+
+    /**
+     * Creates a new cookie. Note: This cookie is only exist in the server side, to send to the browser
+     * call tha RemoteCookie::store() method.
+     *
+     * @return \Zolli\WebDriver\Remote\RemoteCookie
+     */
+    public function createCookie(): RemoteCookie
+    {
+        return new RemoteCookie($this->executor, $this->commandFactory, []);
+    }
+
+    /**
+     * Removes all cookie from the browser
+     */
+    public function removeAllCookie(): void
+    {
+        $command = $this->commandFactory->createCommand(Commands::DELETE_ALL_COOKIE);
+        $this->executor->execute($command);
     }
 
     /**

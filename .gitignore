@@ -11,3 +11,6 @@ build/output/**
 
 # Composer donloaded by the build task
 composer.phar
+
+# test file
+test.php

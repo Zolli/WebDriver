@@ -48,10 +48,10 @@ class Commands
     const SET_WINDOW_POSITION = 'setWindowPosition'; //Implemented
     const GET_WINDOW_POSITION = 'getWindowPosition'; //Implemented
     const SET_WINDOW_MAXIMIZED = 'setWindowMaximized'; //- Not supported
-    const GET_ALL_COOKIES = 'getAllCookies';
-    const SET_COOKIE = 'setCookie';
-    const DELETE_ALL_COOKIE = 'deleteAllCookie';
-    const DELETE_NAMED_COOKIE = 'deleteNamedCookie';
+    const GET_ALL_COOKIES = 'getAllCookies'; //Implemented
+    const SET_COOKIE = 'setCookie'; //Implemented
+    const DELETE_ALL_COOKIE = 'deleteAllCookie'; //Implemented
+    const DELETE_NAMED_COOKIE = 'deleteNamedCookie'; //Implemented
     const GET_PAGE_SOURCE = 'getPageSource';
     const GET_PAGE_TITLE = 'getPageTitle';
     const SEARCH_ELEMENT_FROM_ROOT = 'searchElementFromRoot';

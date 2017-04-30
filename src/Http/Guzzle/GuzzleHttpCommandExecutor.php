@@ -34,11 +34,16 @@ class GuzzleHttpCommandExecutor implements HttpCommandExecutorInterface
      * GuzzleHttpCommandExecutor constructor
      *
      * @param string $remoteUrl
+     * @param Client|null $client
      */
-    public function __construct(string $remoteUrl)
+    public function __construct(string $remoteUrl, Client $client = null)
     {
+        if ($client === null) {
+            $client = new Client();
+        }
+
         $this->remoteUrl = $remoteUrl;
-        $this->client = new Client();
+        $this->client = $client;
     }
 
     /**
