@@ -1,0 +1,21 @@
+<?php
+
+namespace Zolli\WebDriver\Exception;
+
+use \Exception as Base;
+
+/**
+ * InvalidModifierKeyException
+ *
+ * @package Zolli\WebDriver
+ * @subpackage Exception
+ *
+ * @copyright    Copyright 2017, Zoltán Borsos
+ * @license      https://github.com/Zolli/WebDriver/blob/master/LICENSE.md
+ *
+ * @codeCoverageIgnore
+ */
+class InvalidModifierKeyException extends Base
+{
+
+}

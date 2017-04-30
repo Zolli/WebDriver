@@ -89,7 +89,7 @@ class GuzzleHttpCommandExecutor implements HttpCommandExecutorInterface
         $body = \GuzzleHttp\json_encode($command->getParameters());
         $returned = [];
 
-        if (in_array($command->getMethod(), ['PUT', 'POST'])) {
+        if (in_array($command->getMethod(), ['PUT', 'POST']) && !empty($command->getParameters())) {
             $returned = [
                 'body' => $body,
                 'headers' => [

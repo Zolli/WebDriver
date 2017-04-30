@@ -254,12 +254,35 @@ class RemoteSession
     }
 
     /**
+     * Returns the full HTML source of the currently loaded page
+     *
+     * @return string
+     */
+    public function getPageSource(): string
+    {
+        $command = $this->commandFactory->createCommand(Commands::GET_PAGE_SOURCE);
+        return (string) $this->executor->execute($command)['value'];
+    }
+
+    /**
+     * Returns the current page title, if the page not has any title an empty string
+     * will be returned.
+     *
+     * @return string
+     */
+    public function getPageTitle(): string
+    {
+        $command = $this->commandFactory->createCommand(Commands::GET_PAGE_TITLE);
+        return (string) $this->executor->execute($command)['value'];
+    }
+
+    /**
      * Finds on element on the page by given selector. If the selector matches more than
      * one element only the first matched element will be returned
      *
      * @param SelectorStrategyInterface $selector
      *
-     * @return int
+     * @return \Zolli\WebDriver\Remote\RemoteElement
      */
     public function findElement(SelectorStrategyInterface $selector)
     {
@@ -270,10 +293,16 @@ class RemoteSession
 
         $response = $this->executor->execute($command);
         $elementId = (int) $response['value']['ELEMENT'];
-        return $elementId;
+
+        return new RemoteElement($this->executor, $this->commandFactory, $elementId);
     }
 
-    public function findElements(SelectorStrategyInterface $selector)
+    /**
+     * @param SelectorStrategyInterface $selector
+     *
+     * @return ArrayCollection
+     */
+    public function findElements(SelectorStrategyInterface $selector): ArrayCollection
     {
         $command = $this->commandFactory->createCommand(Commands::SEARCH_ELEMENTS_FROM_ROOT, [
             'using' => $selector->getStrategyName(),
@@ -281,7 +310,15 @@ class RemoteSession
         ]);
 
         $response = $this->executor->execute($command);
-        var_dump($response);
+        $elements = [];
+
+        foreach ($response['value'] as $element) {
+            $elementId = (int) $element['ELEMENT'];
+
+            $elements[$elementId] = new RemoteElement($this->executor, $this->commandFactory, $elementId);
+        }
+
+        return new ArrayCollection($elements);
     }
 
 

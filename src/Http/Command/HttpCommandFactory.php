@@ -176,7 +176,7 @@ class HttpCommandFactory extends AbstractCommandFactory
         ],
         Commands::GET_PAGE_TITLE => [
             'method' => 'GET',
-            'url' => '/session/:sessionId/source'
+            'url' => '/session/:sessionId/title'
         ],
         Commands::SEARCH_ELEMENT_FROM_ROOT => [
             'method' => 'POST',
