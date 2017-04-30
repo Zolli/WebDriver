@@ -269,7 +269,8 @@ class RemoteCookie
     /**
      * Removes the cookie from the browser
      */
-    public function remove() {
+    public function remove(): void
+    {
         if ($this->isNew === true) {
             throw new RuntimeException('This cookie not sent to the client, so you cannot remove it!');
         }
@@ -286,7 +287,7 @@ class RemoteCookie
      *
      * @return bool
      */
-    public function isStored()
+    public function isStored(): bool
     {
         return $this->isNew;
     }
