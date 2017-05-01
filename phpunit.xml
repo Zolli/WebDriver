@@ -14,7 +14,7 @@
 
     <logging>
         <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
-        <log type="coverage-clover" target="./build/output/logs/clover.xml"/>
+        <log type="coverage-clover" target="build/output/logs/clover.xml"/>
     </logging>
 
     <!-- Generate code coverage report only from the src directory -->
