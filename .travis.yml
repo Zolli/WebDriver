@@ -1,14 +1,31 @@
 language: php
 
+os:
+  - linux
+
+matrix:
+  fast_finish: true
+
 cache:
   directories:
-    - $HOME/.composer/cache
+  - vendor
+  - $HOME/.cache/composer
 
 php:
   - 7.1
 
+sudo: false
+
 before_install:
   - composer install
 
+install:
+  - wget -c -nc --retry-connrefused --tries=0 https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar
+  - chmod +x coveralls.phar
+  - php coveralls.phar --version
+
 script:
  - ./vendor/bin/phing -f build.xml default
+
+after_success:
+  - travis_retry php coveralls.phar -v

@@ -41,7 +41,7 @@
 
     <!-- Default build target -->
     <target name="default"
-            depends="clean,prepare,lint,composer,phpunit,phpcs,phploc,phpcpd"
+            depends="clean,prepare,lint,phpunit,phpcs,phploc,phpcpd"
             description="Default build target" />
 
     <!-- Clean all previous build in workspace -->
